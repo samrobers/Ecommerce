@@ -1,10 +1,30 @@
-const router = require('express').Router();
-const categoryRoutes = require('./category-routes');
-const productRoutes = require('./product-routes');
-const tagRoutes = require('./tag-routes');
+const router = require("express").Router();
+const { Product, Category, Tag } = require("../../models");
+const categoryRoutes = require("./category-routes");
+const productRoutes = require("./product-routes");
+const tagRoutes = require("./tag-routes");
 
-router.use('/categories', categoryRoutes);
-router.use('/products', productRoutes);
-router.use('/tags', tagRoutes);
+Product.belongsTo(Category, {
+  foreignKey: "category_id",
+  onDelete: "CASCADE",
+});
+Category.hasMany(Product, {
+  foreignKey: "product_id",
+  onDelete: "CASCADE",
+});
+
+Product.belongsToMany(Tag, {
+  foreignKey: "tag_id",
+  onDelete: "CASCADE",
+});
+
+Tag.belongsToMany(Product, {
+  foreignKey: "product_id",
+  onDelete: "CASCADE",
+});
+
+router.use("/categories", categoryRoutes);
+router.use("/products", productRoutes);
+router.use("/tags", tagRoutes);
 
 module.exports = router;
